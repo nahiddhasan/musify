@@ -26,7 +26,7 @@ const PlayListBanner = ({
     onOpen();
   };
   return (
-    <div className="flex items-center gap-4 h-[280px] ">
+    <div className="flex items-center flex-col md:flex-row gap-4">
       <div className="w-[250px] group relative shadow-md z-10 overflow-hidden">
         <div className="flex flex-col items-center justify-center rounded-md overflow-hidden bg-zinc-800 transition">
           <div className="h-full w-full relative aspect-square overflow-hidden rounded-sm">
@@ -53,11 +53,13 @@ const PlayListBanner = ({
           </div>
         )}
       </div>
-      <div className="w-3/4 flex flex-col gap-2">
+      <div className="w-full md:w-3/4 flex flex-col gap-2 h-full justify-center">
         <span>{type}</span>
         <h1
           onClick={handleUpdate}
-          className="text-7xl truncate whitespace-nowrap font-bold mb-2"
+          className={`truncate text-3xl md:text-4xl lg:text-7xl whitespace-nowrap font-bold mb-2 ${
+            playlistOwner && "cursor-pointer"
+          }`}
         >
           {title}
         </h1>
@@ -70,7 +72,7 @@ const PlayListBanner = ({
             alt="Profile"
             className="object-cover rounded-full"
           />
-          <span>{user.name}</span>
+          <span>{user?.name}</span>
         </div>
       </div>
       <UpdatePlaylist

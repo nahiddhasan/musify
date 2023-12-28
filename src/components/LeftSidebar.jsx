@@ -9,6 +9,7 @@ import { GoHome, GoHomeFill } from "react-icons/go";
 import { MdLibraryMusic, MdOutlineLibraryMusic } from "react-icons/md";
 import { RiSearch2Fill, RiSearch2Line } from "react-icons/ri";
 import SidebarAddItem from "./SidebarAddItem";
+import PlaylistLoader from "./loader/PlaylistLoader";
 
 const LeftSidebar = ({ playlists, likedPlaylist }) => {
   const { status } = useSession();
@@ -21,7 +22,7 @@ const LeftSidebar = ({ playlists, likedPlaylist }) => {
         colapse
           ? "w-[70px] transition-all duration-300"
           : "w-[300px] transition-all duration-300"
-      } flex flex-col gap-2 h-full`}
+      } hidden md:flex flex-col gap-2 h-full`}
     >
       <div className="bg-zinc-900 rounded-md p-4 flex flex-col gap-4">
         <Link href="/" className="flex items-center gap-3 cursor-pointer">
@@ -57,7 +58,7 @@ const LeftSidebar = ({ playlists, likedPlaylist }) => {
       </div>
       <div className="bg-zinc-900 rounded-md p-4 overflow-auto h-full">
         <div className="flex items-center justify-between mb-3">
-          <span
+          <div
             onClick={() => setColapse(!colapse)}
             className="flex gap-3 items-center text-lg cursor-pointer"
           >
@@ -74,76 +75,82 @@ const LeftSidebar = ({ playlists, likedPlaylist }) => {
             >
               Your Library
             </span>
-          </span>
+          </div>
           {/* add library options  */}
           <SidebarAddItem colapse={colapse} status={status} />
         </div>
         <div className="flex flex-col gap-1">
           {/* Liked songs  */}
-          {status === "authenticated" && (
-            <>
-              {likedPlaylist?.songs?.length > 0 && (
-                <Link
-                  href="/liked"
-                  className={`${
-                    pathname === "/liked" && "bg-zinc-800/70"
-                  } flex items-center gap-2 hover:bg-zinc-800 transition rounded-sm cursor-pointer ${
-                    colapse ? "w-full p-[2px]" : "p-2"
-                  }`}
-                >
-                  <span
-                    className={`${
-                      colapse ? "h-8 w-8" : "h-12 w-12"
-                    } rounded-sm bg-slate-500 flex items-center justify-center relative overflow-hidden`}
-                  >
-                    <Image src={likedPlaylist.image} fill alt="music" />
-                  </span>
-                  <div className={`flex flex-col ${colapse && "hidden"}`}>
-                    <span>{likedPlaylist.title}</span>
-                    <span className="text-sm text-zinc-200">
-                      {likedPlaylist.songs.length} songs
-                    </span>
-                  </div>
-                </Link>
-              )}
-              {/* Playlist  */}
-              {playlists.length > 0 &&
-                playlists.map((playlist) => (
+          {status === "loading" ? (
+            <PlaylistLoader colapse={colapse} />
+          ) : (
+            status === "authenticated" && (
+              <>
+                {likedPlaylist?.songs?.length > 0 && (
                   <Link
-                    key={playlist.id}
-                    href={`/playlist/${playlist.id}`}
+                    href="/liked"
                     className={`${
-                      currentPath === playlist.id && "bg-zinc-800/60"
+                      pathname === "/liked" && "bg-zinc-800/70"
                     } flex items-center gap-2 hover:bg-zinc-800 transition rounded-sm cursor-pointer ${
                       colapse ? "w-full p-[2px]" : "p-2"
                     }`}
                   >
-                    <div
+                    <span
                       className={`${
-                        colapse ? "h-8 w-8" : "h-12 w-1/5"
-                      } bg-zinc-800 rounded-sm flex items-center justify-center relative overflow-hidden`}
+                        colapse ? "h-8 w-8" : "h-12 w-12"
+                      } rounded-sm bg-slate-500 flex items-center justify-center relative overflow-hidden`}
                     >
-                      <Image
-                        src={playlist.image || "/img/music.svg"}
-                        fill
-                        alt="music"
-                      />
-                    </div>
-
-                    <div
-                      className={`flex flex-col w-4/5 ${colapse && "hidden"}`}
-                    >
-                      <span className="truncate">{playlist.title}</span>
-                      <div className="flex gap-1 truncate">
-                        <span className="text-sm text-zinc-200">Playlist</span>
-                        <span className="text-sm font-semibold text-zinc-200">
-                          {playlist.creator.name}
-                        </span>
-                      </div>
+                      <Image src={likedPlaylist.image} fill alt="music" />
+                    </span>
+                    <div className={`flex flex-col ${colapse && "hidden"}`}>
+                      <span>{likedPlaylist.title}</span>
+                      <span className="text-sm text-zinc-200">
+                        {likedPlaylist.songs.length} songs
+                      </span>
                     </div>
                   </Link>
-                ))}
-            </>
+                )}
+                {/* Playlist  */}
+                {playlists.length > 0 &&
+                  playlists.map((playlist) => (
+                    <Link
+                      key={playlist.id}
+                      href={`/playlist/${playlist.id}`}
+                      className={`${
+                        currentPath === playlist.id && "bg-zinc-800/60"
+                      } flex items-center gap-2 hover:bg-zinc-800 transition rounded-sm cursor-pointer ${
+                        colapse ? "w-full p-[2px]" : "p-2"
+                      }`}
+                    >
+                      <div
+                        className={`${
+                          colapse ? "h-8 w-8" : "h-12 w-1/5"
+                        } bg-zinc-800 rounded-sm flex items-center justify-center relative overflow-hidden`}
+                      >
+                        <Image
+                          src={playlist.image || "/img/music.svg"}
+                          fill
+                          alt="music"
+                        />
+                      </div>
+
+                      <div
+                        className={`flex flex-col w-4/5 ${colapse && "hidden"}`}
+                      >
+                        <span className="truncate">{playlist.title}</span>
+                        <div className="flex gap-1 truncate">
+                          <span className="text-sm text-zinc-200">
+                            Playlist
+                          </span>
+                          <span className="text-sm font-semibold text-zinc-200">
+                            {playlist.creator.name}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+              </>
+            )
           )}
         </div>
       </div>

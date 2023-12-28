@@ -3,33 +3,22 @@ import setPlayPause from "@/globalStates/setPlayPause";
 import setSongDetails from "@/globalStates/setSongDetails";
 import { FaPause, FaPlay } from "react-icons/fa6";
 
-const PlayPause = ({ song, playlist }) => {
-  const {
-    onOpen,
-    setActiveSong,
-    activeSong,
-    setPlaylist,
-    playlist: pl,
-  } = setSongDetails();
+const PlaylistPlayPause = ({ playlist }) => {
+  const { onOpen, setActiveSong, setPlaylist, playlist: pl } = setSongDetails();
   const { isPlaying, setPlay, setPause } = setPlayPause();
 
   const handlePlay = () => {
-    if (isPlaying && (isCurrentyPlaying || isPl)) {
+    if (isPlaying && isPl) {
       setPause();
     } else {
       onOpen();
       setPlaylist(playlist);
+      setActiveSong(playlist.songs[0]);
       setPlay();
-      if (!song) {
-        setActiveSong(playlist.songs[0]);
-      } else {
-        setActiveSong(song);
-      }
     }
   };
 
-  const isCurrentyPlaying = song?.id === activeSong?.id;
-  const isPl = playlist?.id === pl?.id;
+  const isPl = playlist.id === pl.id;
 
   return (
     <div
@@ -37,7 +26,7 @@ const PlayPause = ({ song, playlist }) => {
         "p-2 rounded-full bg-green-500 hover:bg-green-500 hover:scale-105 transition cursor-pointer text-black"
       }
     >
-      {isPlaying && isCurrentyPlaying ? (
+      {isPlaying && isPl ? (
         <FaPause size={24} onClick={handlePlay} />
       ) : (
         <FaPlay onClick={handlePlay} size={24} />
@@ -46,4 +35,4 @@ const PlayPause = ({ song, playlist }) => {
   );
 };
 
-export default PlayPause;
+export default PlaylistPlayPause;

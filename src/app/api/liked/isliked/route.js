@@ -18,7 +18,7 @@ export const GET = async(req)=>{
         include: {
             likedPlaylist: {
                 where: {
-                    title: "Liked",
+                    title: "Liked Playlist",
                 },
                 include: {
                     songs: true,
@@ -31,8 +31,10 @@ export const GET = async(req)=>{
        }
 
        const likedPlaylist = user.likedPlaylist[0];
+
        if (!likedPlaylist) {
-        return new NextResponse(JSON.stringify({ message: "Liked playlist not found" }, { status: 404 }));
+        const isLiked = false;
+        return new NextResponse(JSON.stringify(isLiked, { status: 404 }));
     }
 
     const isLiked = likedPlaylist.songs.some((song) => song.id === songId);

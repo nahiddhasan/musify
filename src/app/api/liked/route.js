@@ -24,7 +24,7 @@ export const POST =async(req)=>{
             return new NextResponse(JSON.stringify({messege:"User not Found!"},{staus:500}))  
         }
 
-        const IsLikedPlaylist = user.likedPlaylist.find((playlist)=>playlist.title === "Liked")
+        const IsLikedPlaylist = user.likedPlaylist.find((playlist)=>playlist.title === "Liked Playlist")
 
         let isAlreadyLiked = false;
 
@@ -36,7 +36,7 @@ export const POST =async(req)=>{
         if(!IsLikedPlaylist){
             const newLikedPlaylist = await prisma.LikedPlaylist.create({
                 data:{
-                    title:"Liked",
+                    title:"Liked Playlist",
                     image:"/img/love.png",
                     creator:{
                         connect:{
@@ -105,7 +105,8 @@ export const GET = async(req)=>{
         include: {
             likedPlaylist: {
                 where: {
-                    title: "Liked",
+                    creatorId:session.user.id,
+                    title: "Liked Playlist",
                 },
                 include: {
                     songs: {
@@ -122,6 +123,7 @@ export const GET = async(req)=>{
        }
 
        const likedPlaylist = user.likedPlaylist[0];
+
        if (!likedPlaylist) {
         return new NextResponse(JSON.stringify({ message: "Liked playlist not found" }, { status: 404 }));
     }

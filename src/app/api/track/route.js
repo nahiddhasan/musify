@@ -25,8 +25,14 @@ export const POST =async(req)=>{
 
 //get all songs
 export const GET =async(req)=>{
+    const {searchParams} = new URL(req.url)
+    const search = searchParams.get("search")
+
     try {
         const songs = await prisma.Song.findMany({
+            where:{
+                ...(search && { title: {contains: search,mode:"insensitive"} }),
+            },
             include:{
                 artist:true,
             }

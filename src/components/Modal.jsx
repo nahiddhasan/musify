@@ -20,7 +20,9 @@ const Modal = ({ title, onClose, children }) => {
             <IoMdClose />
           </button>
         </div>
-        <div className="py-2">{children}</div>
+        <div className="py-2 flex items-center justify-center h-full">
+          {children}
+        </div>
       </div>
     </div>
   );

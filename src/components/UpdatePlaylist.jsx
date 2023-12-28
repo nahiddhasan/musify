@@ -53,14 +53,17 @@ const UpdatePlaylist = ({
     <div>
       {isOpen && (
         <Modal onClose={onClose} title={"Update Playlist"}>
-          <form onSubmit={handleUpdate} className="flex flex-col gap-4 my-3">
+          <form
+            onSubmit={handleUpdate}
+            className="flex flex-col gap-4 my-3 w-full"
+          >
             {!title && (
               <span className="flex gap-2 items-center bg-red-500 rounded-sm px-2 p-1 text-sm">
                 <MdErrorOutline />
                 Playlist Name is required!
               </span>
             )}
-            <div className="flex gap-2 items-center justify-center">
+            <div className="flex gap-2 items-center justify-center flex-col md:flex-row">
               <div className="w-[150px] group relative shadow-2xl">
                 <div className="flex flex-col items-center justify-center rounded-sm overflow-hidden bg-zinc-800 transition">
                   <div className="h-full w-full relative aspect-square overflow-hidden rounded-sm">

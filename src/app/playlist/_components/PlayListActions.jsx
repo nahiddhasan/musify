@@ -1,6 +1,6 @@
 "use client";
 import Modal from "@/components/Modal";
-import PlayPause from "@/components/PlayPause";
+import PlaylistPlayPause from "@/components/PlaylistPlayPause";
 import setUpdatePlaylist from "@/globalStates/setUpdatePlaylist";
 import useOutsideClick from "@/hooks/outSideClick";
 import { useSession } from "next-auth/react";
@@ -45,7 +45,7 @@ const PlayListActions = ({ playlist }) => {
   return (
     <div className="flex items-center justify-between mb-4 mt-2">
       <div className="flex items-center gap-4 relative">
-        {playlist.songs.length > 0 && <PlayPause playlist={playlist} />}
+        {playlist.songs.length > 0 && <PlaylistPlayPause playlist={playlist} />}
         <IoIosMore
           onClick={() => setMoreOpen(!moreOpen)}
           size={30}

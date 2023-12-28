@@ -19,9 +19,9 @@ const Player = () => {
   const [duration, setDureation] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [seek, setSeek] = useState(0);
+
   const { playlist, activeSong, setActiveSong, isOpen, onOpen, onClose } =
     setSongDetails();
-
   const { isPlaying, setPlay, setPause } = setPlayPause();
 
   const onPlayNext = () => {
@@ -92,7 +92,7 @@ const Player = () => {
     <div
       className={`${
         activeSong ? "flex" : "hidden"
-      } fixed left-0 bottom-0 h-16 w-full bg-zinc-950 items-center justify-between px-4`}
+      }  fixed left-0 bottom-0 h-16 w-full bg-zinc-950 items-center justify-between px-4`}
     >
       {/* left  */}
       <div className="flex-1 flex items-center gap-2">

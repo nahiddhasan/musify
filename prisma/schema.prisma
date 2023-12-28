@@ -46,10 +46,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
-  song      Song[]
-  playlists Playlist[]
-
-  likes         Like[]
+  song          Song[]
+  playlists     Playlist[]
   likedPlaylist LikedPlaylist[]
 }
 
@@ -73,22 +71,10 @@ model Song {
   audioPath String
   image     String?
 
-  likes            Like[]
   playlists        Playlist[]      @relation(fields: [playlistIds], references: [id])
   playlistIds      String[]
   LikedPlaylist    LikedPlaylist[] @relation(fields: [likedPlaylistIds], references: [id])
   likedPlaylistIds String[]
-}
-
-model Like {
-  id        String   @id @default(cuid()) @map("_id")
-  createdAt DateTime @default(now())
-  song      Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
-  songId    String
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([songId, userId])
 }
 
 model Playlist {

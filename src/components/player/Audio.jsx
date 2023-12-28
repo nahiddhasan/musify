@@ -29,11 +29,13 @@ const Audio = ({
 
   useEffect(() => {
     audioRef.current.volume = volume / 100;
-    if (volume > 0) {
-      setMute(false);
-    }
-    if (volume <= 0) {
-      setMute(true);
+    if (setMute) {
+      if (volume > 0) {
+        setMute(false);
+      }
+      if (volume <= 0) {
+        setMute(true);
+      }
     }
   }, [volume]);
 

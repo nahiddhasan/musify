@@ -24,7 +24,7 @@ const Header = ({ children }) => {
   }, []);
 
   return (
-    <div className="sticky top-0 z-10">
+    <div className="sticky top-0 z-50">
       <div
         className={` w-full bg-zinc-900 flex items-center justify-between p-4 z-10`}
       >

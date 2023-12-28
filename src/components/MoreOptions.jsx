@@ -1,5 +1,6 @@
 "use client";
 import useOutsideClick from "@/hooks/outSideClick";
+import fetcher from "@/utils/fetcher";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -7,12 +8,18 @@ import toast from "react-hot-toast";
 import { FiPlus } from "react-icons/fi";
 import { IoIosMore, IoIosShareAlt } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
+import useSWR from "swr";
 
-const MoreOptions = ({ left, playlist, playlists, songId }) => {
+const MoreOptions = ({ left, playlist, songId }) => {
   const { status } = useSession();
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useOutsideClick(() => setMoreOpen(false));
   const router = useRouter();
+
+  const { data: playlists, isLoading } = useSWR(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/playlist`,
+    fetcher
+  );
 
   const handleAddToPlaylist = async (id, songIds) => {
     if (songIds.includes(songId)) {
@@ -44,7 +51,7 @@ const MoreOptions = ({ left, playlist, playlists, songId }) => {
   };
 
   return (
-    <div ref={moreRef} className="flex items-center gap-4 relative z-40">
+    <div ref={moreRef} className="flex items-center gap-4 relative ">
       <IoIosMore
         onClick={() => setMoreOpen(!moreOpen)}
         size={26}
@@ -76,17 +83,19 @@ const MoreOptions = ({ left, playlist, playlists, songId }) => {
                   left && left ? "left-full" : "right-full"
                 } top-0 bg-zinc-800 w-[200px] p-1 rounded-sm`}
               >
-                {playlists?.map((playlist) => (
-                  <div
-                    onClick={() =>
-                      handleAddToPlaylist(playlist.id, playlist.songIds)
-                    }
-                    key={playlist.id}
-                    className="flex items-center gap-2 w-full cursor-pointer rounded-sm p-2 hover:bg-zinc-700 transition"
-                  >
-                    {playlist.title}
-                  </div>
-                ))}
+                {isLoading
+                  ? "Loading..."
+                  : playlists.userPlaylists?.map((playlist) => (
+                      <div
+                        onClick={() =>
+                          handleAddToPlaylist(playlist.id, playlist.songIds)
+                        }
+                        key={playlist.id}
+                        className="flex items-center gap-2 w-full cursor-pointer rounded-sm p-2 hover:bg-zinc-700 transition"
+                      >
+                        {playlist.title}
+                      </div>
+                    ))}
               </div>
             </div>
           </>

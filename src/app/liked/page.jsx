@@ -1,4 +1,4 @@
-import PlayPause from "@/components/PlayPause";
+import PlaylistPlayPause from "@/components/PlaylistPlayPause";
 import { getLikedPlaylist } from "@/utils/actions";
 import { getAuthSession } from "@/utils/auth";
 import { redirect } from "next/navigation";
@@ -22,7 +22,7 @@ const LikedSongs = async () => {
         type={"PlayList"}
       />
       <div className="flex items-center justify-between mb-4 mt-2">
-        <PlayPause playlist={playlist} />
+        <PlaylistPlayPause playlist={playlist} />
         <div>
           <CiCircleList size={30} className=" cursor-pointer" />
         </div>

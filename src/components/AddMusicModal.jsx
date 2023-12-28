@@ -19,7 +19,7 @@ const AddMusicModal = () => {
   const [audio, setAudio] = useState("");
   const [errors, setErrors] = useState({});
   const [submiting, setSubmiting] = useState(false);
-  console.log(submiting);
+
   const calculateTime = (sec) => {
     const minutes = Math.floor(sec / 60);
     const rtnMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
@@ -49,10 +49,12 @@ const AddMusicModal = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setErrors(addMusicValidate(title, image, audio));
     if (Object.keys(errors).length !== 0) {
-      return;
+      return null;
     }
+
     setSubmiting(true);
     const audioPath = await uploadAudio(audio);
     const imagePath = await uploadImage(image);
@@ -83,7 +85,10 @@ const AddMusicModal = () => {
     <div>
       {isOpen && (
         <Modal onClose={onClose} title={"Upload New Song"}>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4 my-3">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-4 my-3 w-full"
+          >
             <div className="flex flex-col gap-1">
               {errors.title && (
                 <span className="flex gap-2 items-center bg-red-500 text-white rounded-sm px-2 p-1 text-sm">
@@ -98,8 +103,8 @@ const AddMusicModal = () => {
                 </span>
               )}
             </div>
-            <div className="flex gap-2 items-center justify-center">
-              <div className="w-[150px] group relative shadow-2xl">
+            <div className="flex gap-2 items-center justify-center flex-col md:flex-row">
+              <div className="min-w-[150px] group relative shadow-2xl">
                 <div className="flex flex-col items-center justify-center rounded-sm overflow-hidden bg-zinc-800 transition">
                   <div className="h-full w-full relative aspect-square overflow-hidden rounded-sm">
                     <Image
