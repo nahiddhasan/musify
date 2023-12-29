@@ -1,4 +1,4 @@
-import { getLikedPlaylist, getPlaylist } from "@/utils/actions";
+import { likedPlaylistAction, playlistAction } from "@/utils/data";
 import LeftSidebar from "./LeftSidebar";
 import MobileBottombar from "./MobileBottombar";
 import RightSidebar from "./RightSidebar";
@@ -6,8 +6,8 @@ import MobilePlayer from "./player/MobilePlayer";
 import Player from "./player/Player";
 
 const Sidebar = async ({ children }) => {
-  const { userPlaylists } = await getPlaylist();
-  const likedPlaylist = await getLikedPlaylist();
+  const { userPlaylists } = await playlistAction();
+  const likedPlaylist = await likedPlaylistAction();
 
   return (
     <div className="flex flex-col text-white max-w-[1366px] mx-auto h-full ">
