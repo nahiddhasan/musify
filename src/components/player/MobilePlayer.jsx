@@ -20,8 +20,7 @@ const MobilePlayer = () => {
   if (!breakpoint === "mobile") {
     return;
   }
-  const { playlist, activeSong, setActiveSong, isOpen, onOpen, onClose } =
-    setSongDetails();
+  const { playlist, activeSong, setActiveSong } = setSongDetails();
   const { isPlaying, setPlay, setPause } = setPlayPause();
 
   const onPlayNext = () => {

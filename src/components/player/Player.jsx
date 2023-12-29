@@ -11,9 +11,13 @@ import {
   TbLayoutSidebarRightCollapse,
   TbLayoutSidebarRightCollapseFilled,
 } from "react-icons/tb";
+import { useBreakpoint } from "use-breakpoint";
 import Audio from "./Audio";
+const BREAKPOINTS = { mobile: 0, tablet: 768, desktop: 1280 };
 
 const Player = () => {
+  const { breakpoint } = useBreakpoint(BREAKPOINTS, "mobile");
+
   const [volume, setVolume] = useState(100);
   const [mute, setMute] = useState(false);
   const [duration, setDureation] = useState(0);
@@ -24,6 +28,9 @@ const Player = () => {
     setSongDetails();
   const { isPlaying, setPlay, setPause } = setPlayPause();
 
+  if (breakpoint === "mobile") {
+    return;
+  }
   const onPlayNext = () => {
     //check is playlist exist or not
     if (playlist.songs.length === 0 || !playlist.songs) {

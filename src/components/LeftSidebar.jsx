@@ -56,8 +56,8 @@ const LeftSidebar = ({ playlists, likedPlaylist }) => {
           <span className={`${colapse && "hidden"}`}>Search</span>
         </Link>
       </div>
-      <div className="bg-zinc-900 rounded-md p-4 overflow-auto h-full">
-        <div className="flex items-center justify-between mb-3">
+      <div className="relative bg-zinc-900 rounded-md  overflow-auto h-full no-scrollbar">
+        <div className="sticky top-0 left-0 flex items-center justify-between z-10 bg-zinc-900 p-4 pb-2">
           <div
             onClick={() => setColapse(!colapse)}
             className="flex gap-3 items-center text-lg cursor-pointer"
@@ -79,7 +79,7 @@ const LeftSidebar = ({ playlists, likedPlaylist }) => {
           {/* add library options  */}
           <SidebarAddItem colapse={colapse} status={status} />
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 p-4 pt-2">
           {/* Liked songs  */}
           {status === "loading" ? (
             <PlaylistLoader colapse={colapse} />
