@@ -15,7 +15,7 @@ export const playlistAction = async ()=>{
                     },
                 }
             })
-            return allPlaylists;
+            return {allPlaylists};
         }
             const userPlaylists = await prisma.Playlist.findMany({
                 where:{
