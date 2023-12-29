@@ -1,6 +1,6 @@
 import PlaylistPlayPause from "@/components/PlaylistPlayPause";
-import { getLikedPlaylist } from "@/utils/actions";
 import { getAuthSession } from "@/utils/auth";
+import { likedPlaylistAction } from "@/utils/data";
 import { redirect } from "next/navigation";
 import { CiCircleList } from "react-icons/ci";
 import PlayListBanner from "../playlist/_components/PlayListBanner";
@@ -11,7 +11,7 @@ const LikedSongs = async () => {
   if (!session) {
     return redirect("/");
   }
-  const playlist = await getLikedPlaylist();
+  const playlist = await likedPlaylistAction();
 
   return (
     <div className="p-4">
