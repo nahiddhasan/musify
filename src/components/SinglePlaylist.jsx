@@ -50,5 +50,3 @@ const SinglePlaylist = ({ playlist }) => {
 };
 
 export default SinglePlaylist;
-
-// ${currentlyPlaying && isPlaying ? "scale-100 translate-y-0" : "scale-0"}
