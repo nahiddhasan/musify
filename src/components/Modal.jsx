@@ -9,7 +9,7 @@ const Modal = ({ title, onClose, children }) => {
     <div className="bg-zinc-900/10 backdrop-blur-sm fixed inset-0 z-[100]">
       <div
         ref={ModalRef}
-        className="fixed drop-shadow-lg border border-zinc-700 top-[50%] left-[50%] max-h-full h-full md:h-auto md:max-h-[85vh] w-full md:w-[90vw] md:max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md bg-zinc-700 p-4"
+        className="fixed drop-shadow-lg border border-zinc-700 top-[50%] left-[50%] max-h-[90%] h-auto md:h-auto md:max-h-[85vh] w-[90%] md:w-[90vw] md:max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md bg-zinc-700 p-4"
       >
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-white">{title}</h2>

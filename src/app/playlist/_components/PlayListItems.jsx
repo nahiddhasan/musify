@@ -6,7 +6,7 @@ import setSongDetails from "@/globalStates/setSongDetails";
 import Link from "next/link";
 import { FaPause, FaPlay } from "react-icons/fa6";
 
-const PlayListItems = ({ playlist, playlists }) => {
+const PlayListItems = ({ playlist }) => {
   const {
     playlist: pl,
     setActiveSong,
@@ -46,21 +46,21 @@ const PlayListItems = ({ playlist, playlists }) => {
         </tr>
       </thead>
       <tbody>
-        {playlist.songs.map((item, index) => (
+        {playlist.songs?.map((item, index) => (
           <tr
             key={item.id}
             className={`${
               activeSong?.id === item.id && "bg-zinc-700"
-            } hover:bg-zinc-800 transition rounded-md my-2 group/table relative `}
+            } hover:bg-zinc-800 transition rounded-md my-2 group/table relative`}
           >
             <td className="px-2 md:px-6 py-2">
-              <div>
+              <div className="w-8">
                 {isPlaying &&
-                playlist.id === pl.id &&
+                playlist.id === pl?.id &&
                 activeSong?.id === item.id ? (
                   <svg
                     className="group-hover/table:hidden"
-                    width="16"
+                    width="10"
                     height="16"
                     viewBox="0 0 206 209"
                     fill="none"
@@ -102,7 +102,7 @@ const PlayListItems = ({ playlist, playlists }) => {
                     />
                   </svg>
                 ) : (
-                  <span className="group-hover/table:hidden px-2">
+                  <span className="group-hover/table:hidden w-full">
                     {index + 1}
                   </span>
                 )}
@@ -110,7 +110,7 @@ const PlayListItems = ({ playlist, playlists }) => {
               <div className=" hidden group-hover/table:block absolute left-2 md:left-6 top-[50%] -translate-y-[50%]">
                 <button className="" onClick={() => handlePlay(item.id, index)}>
                   {isPlaying &&
-                  playlist.id === pl.id &&
+                  playlist.id === pl?.id &&
                   item.id === activeSong?.id ? (
                     <FaPause size={18} />
                   ) : (
@@ -119,11 +119,11 @@ const PlayListItems = ({ playlist, playlists }) => {
                 </button>
               </div>
             </td>
-            <td className="px-2 md:px-6 py-2 truncate font-medium whitespace-nowrap text-white">
+            <td className="px-2 md:px-6 py-2 max-w-[200px] truncate font-medium whitespace-nowrap text-white">
               <Link
                 href={`/track/${item.id}`}
                 className={`${
-                  playlist.id === pl.id &&
+                  playlist.id === pl?.id &&
                   activeSong?.id === item.id &&
                   "text-green-600"
                 }`}
@@ -142,11 +142,7 @@ const PlayListItems = ({ playlist, playlists }) => {
               {item.duration}
             </td>
             <td className="px-2 md:px-6 py-2 md:opacity-0 md:group-hover/table:opacity-100">
-              <MoreOptions
-                playlist={playlist}
-                playlists={playlists}
-                songId={item.id}
-              />
+              <MoreOptions playlist={playlist} songId={item.id} />
             </td>
           </tr>
         ))}

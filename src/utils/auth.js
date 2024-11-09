@@ -18,6 +18,7 @@ export const authOptions = {
       async session({ token, session }) {
         if (token) {
           session.user.id = token.id;
+          session.user.role = token.role;
         }
         return session;
       },
@@ -27,7 +28,9 @@ export const authOptions = {
             email: token.email,
           },
         });
+       
         token.id = userInDb?.id;
+        token.role = userInDb?.role;
         return token;
       },
     },

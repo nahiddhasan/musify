@@ -6,6 +6,7 @@ import Link from "next/link";
 import { FaPlay } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import LikeSong from "./LikeSong";
+import MarqueeText from "./MarqueText";
 import MoreOptions from "./MoreOptions";
 
 const RightSidebar = () => {
@@ -47,7 +48,9 @@ const RightSidebar = () => {
     >
       <div className="flex items-center justify-between overflow-hidden">
         <h1 className="w-4/5 font-semibold truncate whitespace-nowrap text-lg capitalize overflow-hidden">
-          {activeSong?.title}
+          {/* {activeSong?.title} */}
+
+          <MarqueeText text={activeSong?.title} speed={10} />
         </h1>
         <button
           className="hover:bg-zinc-700 text-zinc-300 hover:text-white  h-[25px] w-[25px] flex items-center justify-center rounded-full focus:outline-none"
@@ -75,7 +78,8 @@ const RightSidebar = () => {
               href={`/track/${activeSong?.id}`}
               className="text-2xl truncate whitespace-nowrap font-semibold capitalize hover:underline  overflow-hidden"
             >
-              {activeSong?.title}
+              {/* {activeSong?.title} */}
+              <MarqueeText text={activeSong?.title} speed={20} />
             </Link>
             <Link
               href={`/artist/${activeSong?.artist.id}`}
@@ -91,9 +95,9 @@ const RightSidebar = () => {
         </div>
         {/* queue songs  */}
         {playlist?.songs && playlist.songs.length > 1 && (
-          <div className="w-full bg-zinc-700 rounded-md p-2 ">
+          <div className="w-full bg-zinc-700 rounded-md p-2">
             <h1 className="p-1 text-xl mb-2">Next in queue</h1>
-            <div className="group relative flex items-center gap-2 hover:bg-zinc-600 p-2 rounded-md">
+            <div className="w-full group relative flex items-center gap-2 hover:bg-zinc-600 p-2 rounded-md">
               <div className="h-[50px] w-[50px] relative aspect-square overflow-hidden rounded-md">
                 <Image
                   src={nextSong?.image || "/img/music.svg"}
@@ -102,10 +106,11 @@ const RightSidebar = () => {
                   className="object-cover"
                 />
               </div>
-              <div className="">
+              <div className="w-[calc(100%-60px)] truncate">
+                {/* Add flex-1 to allow space for truncation */}
                 <Link
                   href={`/track/${nextSong?.id}`}
-                  className="capitalize truncate hover:underline"
+                  className="capitalize hover:underline"
                 >
                   {nextSong?.title}
                 </Link>
@@ -114,7 +119,7 @@ const RightSidebar = () => {
                 </p>
               </div>
               <button
-                className=" absolute left-[90%] hidden group-hover:block top-1/2 -translate-y-1/2"
+                className="absolute left-[90%] hidden group-hover:block top-1/2 -translate-y-1/2"
                 onClick={() => handlePlay(nextSong?.id)}
               >
                 <FaPlay size={18} />

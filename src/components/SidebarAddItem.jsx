@@ -2,12 +2,16 @@
 import setAddMusic from "@/globalStates/setAddMusicModal";
 import setLoginModal from "@/globalStates/setLoginModal";
 import useOutsideClick from "@/hooks/outSideClick";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { HiPlus } from "react-icons/hi2";
+import { useSWRConfig } from "swr";
 
-const SidebarAddItem = ({ colapse, status }) => {
+const SidebarAddItem = ({ colapse }) => {
   const router = useRouter();
+  const { status, data: session } = useSession();
+  const { mutate } = useSWRConfig();
   const [open, setOpen] = useState(false);
   const authModal = setLoginModal();
   const addMusicModal = setAddMusic();
@@ -21,7 +25,7 @@ const SidebarAddItem = ({ colapse, status }) => {
     }
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/playlist`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/playlists`,
         {
           method: "POST",
           body: JSON.stringify({
@@ -31,8 +35,10 @@ const SidebarAddItem = ({ colapse, status }) => {
       );
       const data = await res.json();
       setOpen(false);
-      router.push(`/playlist/${data.id}`);
+
       router.refresh();
+      mutate("/api/playlists");
+      router.push(`/playlist/${data.id}`);
     } catch (error) {
       console.log(error);
     }
@@ -55,7 +61,7 @@ const SidebarAddItem = ({ colapse, status }) => {
             : "hidden transition-all duration-300"
         } z-10 absolute top-[calc(100%+8px)] right-0 bg-zinc-800 shadow-md rounded-sm w-max p-1 flex-col`}
       >
-        {status === "authenticated" && (
+        {status === "authenticated" && session.user.role === "ARTIST" && (
           <button
             onClick={() => addMusicModal.onOpen()}
             type="button"

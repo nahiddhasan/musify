@@ -13,17 +13,20 @@ const SingleSong = ({ song, songs }) => {
   const { activeSong, playlist } = setSongDetails();
   const { isPlaying } = setPlayPause();
   const currentlyPlaying = song?.id === activeSong?.id;
-  const currentPl = playlist.id === songsPl.id;
+  const currentPl = playlist?.id === songsPl.id;
   return (
     <div className="relative group flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-4 bg-zinc-800/40 cursor-pointer hover:bg-zinc-800 transition p-3">
-      <div className="h-full w-full relative aspect-square overflow-hidden rounded-sm">
+      <Link
+        href={`/track/${song.id}`}
+        className="h-full w-full relative aspect-square overflow-hidden rounded-sm"
+      >
         <Image
           src={song.image || "/img/music.svg"}
           alt="cover image"
           fill
           className="object-cover"
         />
-      </div>
+      </Link>
       <Link
         href={`/track/${song.id}`}
         className="flex flex-col items-start w-full pt-2 md:pt-4 gap-y-1"

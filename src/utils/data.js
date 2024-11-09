@@ -1,93 +1,90 @@
-import { getAuthSession } from "./auth";
-import prisma from "./connect";
-
-export const playlistAction = async ()=>{
-    const session = await getAuthSession()
-    try {
-        if(!session){
-            const allPlaylists = await prisma.Playlist.findMany({
-                include:{
-                    creator:true,
-                    songs:{
-                        include:{
-                            artist:true,
-                        }
-                    },
-                }
-            })
-            return {allPlaylists};
-        }
-            const userPlaylists = await prisma.Playlist.findMany({
-                where:{
-                    creatorId:session.user.id,
-                },
-                include:{
-                    creator:true,
-                }
-            })
-            const allPlaylists = await prisma.Playlist.findMany({
-                include:{
-                    creator:true,
-                    songs:{
-                        include:{
-                            artist:true,
-                        }
-                    },
-                }
-            })
-
-            return {userPlaylists,allPlaylists}
+"use server"
 
 
-    } catch (error) {
-        console.log(error)
-        return {messege:"something went wrong"}
-    }
-}
+export const getUserPlaylists = async (skip,take) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/userPlaylists?take=${take}&skip=${skip}`, {
+    cache: "no-store",
+  });
+ 
+  if (!res.ok) {
+    return "Something went wrong";
+  }
+  const data = await res.json();
+  return data;
+};
+export const getTopArtists = async (skip,take) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/topArtists?take=${take}&skip=${skip}`, {
+    cache: "no-store",
+  });
+ 
+  if (!res.ok) {
+    return "Something went wrong";
+  }
+  const data = await res.json();
+  return data;
+};
 
-// liked playlist
-
-export const likedPlaylistAction = async()=>{
-    const session = await getAuthSession();
-
-    try {
-        if(!session){
-            return {messege:"You are not loged in"}  
-       }
-
-       const user = await prisma.User.findUnique({
-        where: {
-            id: session.user.id,
-        },
-        include: {
-            likedPlaylist: {
-                where: {
-                    creatorId:session.user.id,
-                    title: "Liked Playlist",
-                },
-                include: {
-                    songs: {
-                        include:{
-                            artist:true,
-                        }
-                    },
-                },
-            },
-        },
+export const getSinglePlaylist = async (id) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/playlists/${id}`, {
+      cache: "no-store",
     });
-       if(!user){
-           return {messege:"User not Found!"} 
-       }
-
-       const likedPlaylist = user.likedPlaylist[0];
-
-       if (!likedPlaylist) {
-        return { message: "Liked playlist not found" };
+    if (!res.ok) {
+      return "Something went wrong";
     }
-        return likedPlaylist;
+    const data = await res.json()
+    return data;
+  };
 
-    } catch (error) {
-        console.log(error)
-        return {messege:"something went wrong"}; 
+export const getPlaylists = async () => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/playlists`, {
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      return "Something went wrong";
     }
-}
+    const data = await res.json()
+    return data;
+  };
+
+  export const getLikedPlSongs = async (id) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/likedPlaylist/${id}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      return "Something went wrong";
+    }
+    const data = await res.json()
+    return data;
+  };
+
+  export const getLikedPlaylist = async () => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/likedPlaylist`, {
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      return "Something went wrong";
+    }
+    const data = await res.json()
+    return data;
+  };
+
+  export const getSongs = async (skip,take) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tracks?take=${take}&skip=${skip}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      return "Something went wrong";
+    }
+    const data = await res.json()
+    return data;
+  };
+
+  //get singleSong
+ export const getSingleSong = async (id) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tracks/${id}`);
+    if (!res.ok) {
+      return "Something went wrong";
+    }
+    const data = await res.json()
+    return data;
+  };

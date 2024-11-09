@@ -2,26 +2,15 @@
 import setLoginModal from "@/globalStates/setLoginModal";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import Profile from "./Profile";
+import LoginLoader from "./loader/LoginLoader";
 
 const Header = ({ children }) => {
   const router = useRouter();
   const { onOpen } = setLoginModal();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const user = session?.user;
-  const [active, setActive] = useState(false);
-  const isActive = () => {
-    console.log(window.scrollY);
-    window.scrollY > 0 ? setActive(true) : setActive(false);
-  };
-  useEffect(() => {
-    window.addEventListener("scroll", isActive);
-    return () => {
-      window.removeEventListener("scroll", isActive);
-    };
-  }, []);
 
   return (
     <div className="sticky top-0 z-50">
@@ -29,22 +18,24 @@ const Header = ({ children }) => {
         className={` w-full bg-zinc-900 flex items-center justify-between p-4 z-10`}
       >
         <div className="flex items-center gap-2">
-          <span
+          <button
             onClick={() => router.back()}
-            className="bg-zinc-950 hover:bg-zinc-950/70 transition rounded-full p-2 cursor-pointer"
+            className="bg-zinc-950 hover:bg-zinc-950/70 disabled:cursor-default disabled:bg-zinc-800 disabled:hover:bg-zinc-800 transition rounded-full p-2 cursor-pointer"
           >
             <SlArrowLeft size={18} />
-          </span>
+          </button>
 
-          <span
+          <button
             onClick={() => router.forward()}
-            className="bg-zinc-950 hover:bg-zinc-950/70 transition rounded-full p-2 cursor-pointer"
+            className="bg-zinc-950 hover:bg-zinc-950/70 disabled:cursor-default disabled:bg-zinc-800 disabled:hover:bg-zinc-800 transition rounded-full p-2 cursor-pointer"
           >
             <SlArrowRight size={18} />
-          </span>
+          </button>
         </div>
         <div>
-          {user ? (
+          {status === "loading" ? (
+            <LoginLoader />
+          ) : user ? (
             <Profile user={user} />
           ) : (
             <button

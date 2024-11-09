@@ -1,5 +1,6 @@
 import { getAuthSession } from "@/utils/auth";
 import prisma from "@/utils/connect";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 //Create or update Liked songs playlist
@@ -34,7 +35,7 @@ export const POST =async(req)=>{
         }
 
         if(!IsLikedPlaylist){
-            const newLikedPlaylist = await prisma.LikedPlaylist.create({
+             await prisma.LikedPlaylist.create({
                 data:{
                     title:"Liked Playlist",
                     image:"/img/love.png",
@@ -50,6 +51,7 @@ export const POST =async(req)=>{
                     }
                 }
             })
+            revalidatePath("/")
         return new NextResponse(JSON.stringify({messege:"Song added to Liked songs"},{status:200}))    
         }
         
@@ -67,6 +69,7 @@ export const POST =async(req)=>{
                     }
                 }
             })
+            revalidatePath("/")
         return new NextResponse(JSON.stringify({messege:"Song removed from Liked songs"},{status:200}))
         }
         
@@ -82,6 +85,7 @@ export const POST =async(req)=>{
                     }
                 }
             })
+            revalidatePath("/")
         return new NextResponse(JSON.stringify({messege:"Song added to Liked songs"},{status:200}))
         
     } catch (error) {

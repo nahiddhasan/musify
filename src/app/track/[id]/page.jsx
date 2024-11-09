@@ -2,13 +2,17 @@ import PlayListBanner from "@/app/playlist/_components/PlayListBanner";
 import LikeSong from "@/components/LikeSong";
 import MoreOptions from "@/components/MoreOptions";
 import PlayPause from "@/components/PlayPause";
-import { getSingleSong } from "@/utils/actions";
+import { getAuthSession } from "@/utils/auth";
+import { getSingleSong } from "@/utils/data";
+
 import { CiCircleList } from "react-icons/ci";
 
 const SongDetails = async ({ params }) => {
   const { id } = params;
+  const session = await getAuthSession();
   const song = await getSingleSong(id);
 
+  const isOwner = session && session.user.id === song.artistId;
   return (
     <div className="p-4">
       <PlayListBanner
@@ -23,7 +27,7 @@ const SongDetails = async ({ params }) => {
           <PlayPause song={song} />
           <LikeSong size={30} songId={song.id} />
 
-          <MoreOptions songId={song.id} left={true} />
+          <MoreOptions songId={song.id} left={true} isOwner={isOwner} />
         </div>
         <div>
           <CiCircleList size={30} className=" cursor-pointer" />

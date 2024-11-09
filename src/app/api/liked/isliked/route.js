@@ -34,12 +34,12 @@ export const GET = async(req)=>{
 
        if (!likedPlaylist) {
         const isLiked = false;
-        return new NextResponse(JSON.stringify(isLiked, { status: 404 }));
+        return new NextResponse(JSON.stringify(isLiked, { status: 200 }));
     }
 
     const isLiked = likedPlaylist.songs.some((song) => song.id === songId);
 
-    return new NextResponse(JSON.stringify(isLiked,{staus:500}))  
+    return new NextResponse(JSON.stringify(isLiked,{staus:200}))  
 
     } catch (error) {
         console.log(error)

@@ -11,13 +11,9 @@ import {
   TbLayoutSidebarRightCollapse,
   TbLayoutSidebarRightCollapseFilled,
 } from "react-icons/tb";
-import { useBreakpoint } from "use-breakpoint";
 import Audio from "./Audio";
-const BREAKPOINTS = { mobile: 0, tablet: 768, desktop: 1280 };
 
 const Player = () => {
-  const { breakpoint } = useBreakpoint(BREAKPOINTS, "mobile");
-
   const [volume, setVolume] = useState(100);
   const [mute, setMute] = useState(false);
   const [duration, setDureation] = useState(0);
@@ -28,12 +24,9 @@ const Player = () => {
     setSongDetails();
   const { isPlaying, setPlay, setPause } = setPlayPause();
 
-  if (breakpoint === "mobile") {
-    return;
-  }
   const onPlayNext = () => {
     //check is playlist exist or not
-    if (playlist.songs.length === 0 || !playlist.songs) {
+    if (!playlist || playlist.songs.length === 0 || !playlist.songs) {
       return;
     }
     //check currently played songs index
@@ -55,7 +48,7 @@ const Player = () => {
 
   const onPlayPrev = () => {
     //check is playlist exist or not
-    if (playlist.songs.length === 0 || !playlist.songs) {
+    if (!playlist || playlist.songs.length === 0 || !playlist.songs) {
       return;
     }
     //check currently played songs index
@@ -99,10 +92,10 @@ const Player = () => {
     <div
       className={`${
         activeSong ? "flex" : "hidden"
-      }  fixed left-0 bottom-0 h-16 w-full bg-zinc-950 items-center justify-between px-4`}
+      }  fixed left-0 bottom-0 h-16 w-full items-center justify-between px-4`}
     >
       {/* left  */}
-      <div className="flex-1 flex items-center gap-2">
+      <div className="w-[25%] max-w-[250px] flex items-center gap-2">
         <div className="h-[40px] w-[40px] relative aspect-square overflow-hidden rounded-md">
           <Image
             src={activeSong?.image || "/img/music.svg"}
@@ -111,7 +104,7 @@ const Player = () => {
             className="object-cover"
           />
         </div>
-        <div className="">
+        <div className="truncate w-[calc(100%-60px)]">
           <Link
             href={`/track/${activeSong?.id}`}
             className="capitalize truncate"
@@ -122,7 +115,7 @@ const Player = () => {
         </div>
       </div>
       {/* center  */}
-      <div className="flex-[2] flex flex-col justify-start">
+      <div className="w-[50%] max-w-[700px] flex flex-col justify-start items-center">
         {/* actions  */}
         <div className="flex items-center justify-center">
           <IoPlaySkipBack
@@ -172,7 +165,7 @@ const Player = () => {
         </div>
       </div>
       {/* right  */}
-      <div className="flex-1 flex items-center justify-center gap-2 pl-2">
+      <div className="w-[25%] max-w-[250px] flex items-center justify-center gap-2 pl-2">
         {isOpen ? (
           <TbLayoutSidebarRightCollapseFilled
             className="text-green-400 cursor-pointer"
@@ -188,9 +181,17 @@ const Player = () => {
         )}
 
         {mute ? (
-          <CiVolumeMute onClick={handleMute} size={24} />
+          <CiVolumeMute
+            className="cursor-pointer"
+            onClick={handleMute}
+            size={24}
+          />
         ) : (
-          <CiVolumeHigh onClick={handleMute} size={24} />
+          <CiVolumeHigh
+            className="cursor-pointer"
+            onClick={handleMute}
+            size={24}
+          />
         )}
 
         <input

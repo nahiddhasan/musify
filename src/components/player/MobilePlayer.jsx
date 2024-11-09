@@ -6,20 +6,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { FaPauseCircle, FaPlayCircle } from "react-icons/fa";
 import { IoPlaySkipBack, IoPlaySkipForward } from "react-icons/io5";
-import { useBreakpoint } from "use-breakpoint";
 import Audio from "./Audio";
-const BREAKPOINTS = { mobile: 0, tablet: 768, desktop: 1280 };
 
 const MobilePlayer = () => {
-  const { breakpoint } = useBreakpoint(BREAKPOINTS, "mobile");
-
   const [duration, setDureation] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [seek, setSeek] = useState(0);
 
-  if (!breakpoint === "mobile") {
-    return;
-  }
   const { playlist, activeSong, setActiveSong } = setSongDetails();
   const { isPlaying, setPlay, setPause } = setPlayPause();
 
@@ -84,7 +77,7 @@ const MobilePlayer = () => {
         activeSong ? "block" : "hidden"
       } md:hidden px-4 py-1 absolute left-0 bottom-12  bg-zinc-950 w-full`}
     >
-      <div className="flex items-center justify-between w-full">
+      <div className="flex items-center justify-between w-full truncate">
         <div className="flex-[3] flex items-center gap-2">
           <div className="h-[30px] w-[30px] relative aspect-square overflow-hidden rounded-md">
             <Image

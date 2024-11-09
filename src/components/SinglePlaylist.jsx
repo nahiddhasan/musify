@@ -8,7 +8,7 @@ import PlaylistPlayPause from "./PlaylistPlayPause";
 const SinglePlaylist = ({ playlist }) => {
   const { playlist: pl } = setSongDetails();
   const { isPlaying } = setPlayPause();
-  const isCurrentlyPlaying = playlist.id === pl.id;
+  const isCurrentlyPlaying = playlist.id === pl?.id;
   return (
     <div className="relative group flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-4 bg-zinc-800/40 cursor-pointer hover:bg-zinc-800 transition p-3">
       <div className="h-full w-full relative aspect-square overflow-hidden rounded-sm">

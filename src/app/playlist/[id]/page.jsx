@@ -1,6 +1,6 @@
 import PlayListBanner from "@/app/playlist/_components/PlayListBanner";
-import { getSinglePlaylist } from "@/utils/actions";
-import { playlistAction } from "@/utils/data";
+
+import { getSinglePlaylist } from "@/utils/data";
 import { Suspense } from "react";
 import PlayListActions from "../_components/PlayListActions";
 import PlayListItems from "../_components/PlayListItems";
@@ -8,7 +8,7 @@ import PlayListItems from "../_components/PlayListItems";
 const PlayListPage = async ({ params }) => {
   const { id } = params;
   const playlist = await getSinglePlaylist(id);
-  const playlists = await playlistAction();
+
   return (
     <div className="p-4 bg-gradient-to-t from-zinc-900 via-zinc-700/50 to-zinc-900">
       {/* playlist banner  */}
@@ -23,7 +23,7 @@ const PlayListPage = async ({ params }) => {
       />
       <PlayListActions playlist={playlist} />
       <Suspense fallback={<p>Loading Playlist songs...</p>}>
-        <PlayListItems playlist={playlist} playlists={playlists} />
+        <PlayListItems playlist={playlist} />
       </Suspense>
     </div>
   );

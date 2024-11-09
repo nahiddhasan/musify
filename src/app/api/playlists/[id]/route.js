@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 //get single playlist
 export const GET =async(req,{params})=>{
     const {id} = params;
-
     try {
         const playlist = await prisma.Playlist.findUnique({
             where:{
@@ -32,15 +31,13 @@ export const PATCH =async(req,{params})=>{
     const {id} = params;
     const session = await getAuthSession()
 
-    const { searchParams } = new URL(req.url);
-    const songId = searchParams.get("songId");
-    
     const body =await req.json();
-    try {
+    
+    if(!session){
+        return new NextResponse(JSON.stringify({messege:"You are not Loged in!"},{status:200}))
+   }
 
-        if(!session){
-            return new NextResponse(JSON.stringify({messege:"You are not Loged in!"},{status:200}))
-       }
+    try {
        const creator = await prisma.Playlist.findFirst({
            where:{
                 id,
@@ -51,32 +48,37 @@ export const PATCH =async(req,{params})=>{
        if(!creator){
         return new NextResponse(JSON.stringify({messege:"You are not owner of this playlist!"},{status:200}))
        }
-
-      if(creator.songIds.includes(songId)){
-        const updatedPlaylist = await prisma.Playlist.update({
+       if(id && !body.songId){
+        const updatedPlaylist = await prisma.playlist.update({
             where:{
-                id,
-                creatorId:creator.creatorId,
+                id:creator.id,
             },
             data:{
                 ...body,
+            },
+        })
+        return new NextResponse(JSON.stringify(updatedPlaylist,{status:200}))
+       }
+       if(creator.songIds.includes(body.songId)){
+        const updatedPlaylist = await prisma.playlist.update({
+            where:{
+                id:creator.id,
+            },
+            data:{
                 songs:{
-                    disconnect: songId ? { id: songId } : undefined,
+                    disconnect: body.songId ? { id: body.songId } : undefined,
                 }
             },
         })
         return new NextResponse(JSON.stringify(updatedPlaylist,{status:200}))
-      }
-
-        const updatedPlaylist = await prisma.Playlist.update({
+       }
+        const updatedPlaylist = await prisma.playlist.update({
             where:{
-                id,
-                creatorId:creator.creatorId,
+                id:creator.id,
             },
             data:{
-                ...body,
                 songs:{
-                    connect: songId ? { id: songId } : undefined,
+                    connect: body.songId ? { id: body.songId } : undefined,
                 }
             },
         })
@@ -89,24 +91,26 @@ export const PATCH =async(req,{params})=>{
 
 // Delete Playlist 
 export const DELETE =async(req,{params})=>{
-    const session = await getAuthSession()
     const {id} = params;
+    const session = await getAuthSession()
+    
+    if(!session){
+         return new NextResponse(JSON.stringify({messege:"You are not Loged in!"},{status:200}))
+    }
+
     try {
-        if(!session){
-             return new NextResponse(JSON.stringify({messege:"You are not Loged in!"},{status:200}))
-        }
         const creator = await prisma.Playlist.findFirst({
             where:{
+                id,
                 creatorId:session.user.id,
             }
         })
         if(session.user.id !== creator.creatorId){
              return new NextResponse(JSON.stringify({messege:"You are not owner of this playlist!"},{status:200}))
         }
-         await prisma.Playlist.delete({
+         await prisma.playlist.delete({
             where:{
-                id,
-                creatorId:creator.creatorId,
+                id:creator.id,
             },
         })
         return new NextResponse(JSON.stringify({messege:"Deleted..."},{status:200}))

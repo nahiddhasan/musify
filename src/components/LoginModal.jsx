@@ -2,7 +2,6 @@
 import setLoginModal from "@/globalStates/setLoginModal";
 import { signIn } from "next-auth/react";
 import { FaGoogle } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa6";
 import Modal from "./Modal";
 
 const LoginModal = () => {
@@ -20,10 +19,6 @@ const LoginModal = () => {
               >
                 <FaGoogle className="text-pink-600" />
                 Login With google
-              </button>
-              <button className="flex items-center gap-2 ring-1 ring-zinc-600 hover:bg-zinc-600/70 px-4 p-2 text-white rounded-full">
-                <FaGithub />
-                Login With github
               </button>
             </div>
           </div>

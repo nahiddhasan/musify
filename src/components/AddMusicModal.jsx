@@ -1,17 +1,20 @@
 "use client";
 import setAddMusic from "@/globalStates/setAddMusicModal";
 import { addMusicValidate } from "@/utils/addMusicValidate";
-import { uploadAudio, uploadImage } from "@/utils/upload";
+import { uploadAudio2, uploadImage } from "@/utils/upload";
+import { parseBlob } from "music-metadata-browser";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { MdEdit, MdErrorOutline } from "react-icons/md";
 import Modal from "./Modal";
+import ButtonLoader from "./loader/ButtonLoader";
 
 const AddMusicModal = () => {
   const router = useRouter();
   const { onClose, isOpen } = setAddMusic();
+  const [progress, setProgress] = useState(0);
   const [title, setTitle] = useState("");
   const [lyrics, setLyrics] = useState("");
   const [duration, setDuration] = useState(0);
@@ -28,6 +31,35 @@ const AddMusicModal = () => {
     return `${rtnMinutes}.${rtnSeconds}`;
   };
 
+  const getMeta = async (file) => {
+    if (file) {
+      try {
+        // Parse the MP3 file to extract metadata
+        const metadata = await parseBlob(file);
+
+        // Check if there is embedded album art
+        const picture = metadata.common.picture?.[0];
+        if (picture) {
+          const albumArt = new File([picture.data], "album-art.jpg", {
+            type: picture.format,
+          });
+          setImage(albumArt);
+        } else {
+          console.log("No album art found.");
+          setImage(null);
+        }
+      } catch (error) {
+        console.error("Error reading MP3 file:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (audio) {
+      setTitle(audio.name);
+      getMeta(audio);
+    }
+  }, [audio]);
   useEffect(() => {
     const audioDuration = () => {
       if (audio) {
@@ -35,7 +67,6 @@ const AddMusicModal = () => {
 
         reader.onload = (e) => {
           const aaudio = new Audio(e.target.result);
-
           aaudio.addEventListener("loadedmetadata", () => {
             const duration = aaudio.duration;
             setDuration(duration);
@@ -44,6 +75,7 @@ const AddMusicModal = () => {
         reader.readAsDataURL(audio);
       }
     };
+
     audioDuration();
   }, [audio]);
 
@@ -56,24 +88,32 @@ const AddMusicModal = () => {
     }
 
     setSubmiting(true);
-    const audioPath = await uploadAudio(audio);
+    const audioPath = await uploadAudio2(audio, setProgress);
     const imagePath = await uploadImage(image);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/track`, {
-        method: "POST",
-        body: JSON.stringify({
-          title,
-          duration: calculateTime(duration),
-          lyrics,
-          audioPath,
-          image: imagePath,
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/tracks`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            title,
+            duration: calculateTime(duration),
+            lyrics,
+            audioPath,
+            image: imagePath,
+          }),
+        }
+      );
       const data = await res.json();
       toast.success("Music Added succesfully...");
       setSubmiting(false);
       onClose();
+      setImage("");
+      setAudio("");
+      setTitle("");
+      setLyrics("");
+      setProgress(0);
       router.push(`/track/${data.id}`);
     } catch (error) {
       console.log(error);
@@ -81,6 +121,7 @@ const AddMusicModal = () => {
       setSubmiting(false);
     }
   };
+
   return (
     <div>
       {isOpen && (
@@ -135,7 +176,7 @@ const AddMusicModal = () => {
                   </div>
                 </div>
               </div>
-              <div className="w-[250px] flex flex-col gap-2 h-full">
+              <div className="w-full md:w-[250px] flex flex-col gap-2 h-full">
                 <input
                   type="text"
                   placeholder="Title"
@@ -166,9 +207,36 @@ const AddMusicModal = () => {
             <button
               type="submit"
               disabled={submiting}
-              className="disabled:cursor-not-allowed bg-white text-zinc-700 px-5 py-2 ring-1 w-max self-end rounded-full hover:scale-105"
+              className="disabled:cursor-not-allowed bg-white text-zinc-600 px-5 py-2 ring-1 w-max self-end rounded-full hover:scale-105"
             >
-              Add
+              {progress > 0 ? (
+                <div className="h-6 w-6  rounded-full">
+                  <svg
+                    className="w-full h-full rotate-[-90deg]"
+                    viewBox="0 0 36 36"
+                  >
+                    {/* Background Circle */}
+                    <path
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="#e5e7eb" // Tailwind 'gray-200'
+                      strokeWidth="4"
+                    />
+                    {/* Progress Circle */}
+                    <path
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="#4caf50" // Tailwind 'green-500'
+                      strokeWidth="4"
+                      strokeDasharray={`${progress}, 100`}
+                    />
+                  </svg>
+                </div>
+              ) : submiting ? (
+                <ButtonLoader className="text-2xl" />
+              ) : (
+                "Add"
+              )}
             </button>
           </form>
         </Modal>

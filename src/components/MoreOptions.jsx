@@ -1,4 +1,6 @@
 "use client";
+import setDeleteMusic from "@/globalStates/setDeleteMusicModal";
+import setUpdateMusic from "@/globalStates/setUpdateMusicModal";
 import useOutsideClick from "@/hooks/outSideClick";
 import fetcher from "@/utils/fetcher";
 import { useSession } from "next-auth/react";
@@ -7,17 +9,19 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { FiPlus } from "react-icons/fi";
 import { IoIosMore, IoIosShareAlt } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import useSWR from "swr";
 
-const MoreOptions = ({ left, playlist, songId }) => {
+const MoreOptions = ({ left, playlist, songId, isOwner = false }) => {
   const { status } = useSession();
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useOutsideClick(() => setMoreOpen(false));
   const router = useRouter();
+  const { onOpen } = setUpdateMusic();
+  const { onOpen: deleteOpen } = setDeleteMusic();
 
   const { data: playlists, isLoading } = useSWR(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/playlist`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/playlists`,
     fetcher
   );
 
@@ -26,10 +30,12 @@ const MoreOptions = ({ left, playlist, songId }) => {
       return toast.success("already exists in this playlist");
     }
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/playlist/${id}?songId=${songId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/playlists/${id}`,
       {
         method: "PATCH",
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+          songId,
+        }),
       }
     );
     const data = await res.json();
@@ -39,10 +45,12 @@ const MoreOptions = ({ left, playlist, songId }) => {
 
   const hanldeRemoveFromPlaylist = async (id) => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/playlist/${id}?songId=${songId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/playlists/${id}`,
       {
         method: "PATCH",
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+          songId,
+        }),
       }
     );
     const data = await res.json();
@@ -68,7 +76,7 @@ const MoreOptions = ({ left, playlist, songId }) => {
           } bottom-[calc(100%+8px)] bg-zinc-800 rounded-sm p-1 z-10 w-[200px] ring-1 ring-zinc-700/30 shadow-md`}
         >
           <>
-            <div
+            <button
               onClick={() => {
                 setMoreOpen(false);
               }}
@@ -85,8 +93,8 @@ const MoreOptions = ({ left, playlist, songId }) => {
               >
                 {isLoading
                   ? "Loading..."
-                  : playlists.userPlaylists?.map((playlist) => (
-                      <div
+                  : playlists?.map((playlist) => (
+                      <button
                         onClick={() =>
                           handleAddToPlaylist(playlist.id, playlist.songIds)
                         }
@@ -94,25 +102,43 @@ const MoreOptions = ({ left, playlist, songId }) => {
                         className="flex items-center gap-2 w-full cursor-pointer rounded-sm p-2 hover:bg-zinc-700 transition"
                       >
                         {playlist.title}
-                      </div>
+                      </button>
                     ))}
               </div>
-            </div>
+            </button>
           </>
           {playlist?.songIds.includes(songId) && (
-            <div
+            <button
               onClick={() => hanldeRemoveFromPlaylist(playlist.id)}
               className="flex items-center gap-2 w-full cursor-pointer rounded-sm p-2 hover:bg-zinc-700 transition"
             >
               <MdDelete size={18} />
               Remove From Playlist
-            </div>
+            </button>
           )}
 
-          <div className="flex items-center gap-2 w-full cursor-pointer rounded-sm p-2 hover:bg-zinc-700 transition">
+          {isOwner && (
+            <>
+              <button
+                onClick={() => deleteOpen(songId)}
+                className="flex items-center gap-2 w-full cursor-pointer rounded-sm p-2 hover:bg-zinc-700 transition"
+              >
+                <MdDelete size={18} />
+                Remove
+              </button>
+              <button
+                onClick={() => onOpen(songId)}
+                className="flex items-center gap-2 w-full cursor-pointer rounded-sm p-2 hover:bg-zinc-700 transition"
+              >
+                <MdEdit size={18} />
+                Update
+              </button>
+            </>
+          )}
+          <button className="flex items-center gap-2 w-full cursor-pointer rounded-sm p-2 hover:bg-zinc-700 transition">
             <IoIosShareAlt size={18} />
             Share
-          </div>
+          </button>
         </div>
       )}
     </div>

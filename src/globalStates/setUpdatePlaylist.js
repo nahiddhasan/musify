@@ -2,8 +2,8 @@ import { create } from "zustand";
 
 const setUpdatePlaylist = create((set)=>({
     isOpen:false,
-
-    onOpen:()=>set({isOpen:true}),
+    id:null,
+    onOpen:(id)=>set({isOpen:true,id}),
     onClose:()=>set({isOpen:false}),
 
 }))

@@ -1,9 +1,7 @@
 "use client";
-import UpdatePlaylist from "@/components/UpdatePlaylist";
 import setUpdatePlaylist from "@/globalStates/setUpdatePlaylist";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
 import { MdEdit } from "react-icons/md";
 
 const PlayListBanner = ({
@@ -17,13 +15,13 @@ const PlayListBanner = ({
 }) => {
   const { data: session } = useSession();
   const playlistOwner = session?.user.id === creatorId;
-  const [openUpdateModal, setOpenUpdateModal] = useState(false);
-  const { isOpen, onClose, onOpen } = setUpdatePlaylist();
+
+  const { onOpen } = setUpdatePlaylist();
   const handleUpdate = () => {
     if (!playlistOwner) {
       return;
     }
-    onOpen();
+    onOpen(playlistId);
   };
   return (
     <div className="flex items-center flex-col md:flex-row gap-4">
@@ -40,7 +38,7 @@ const PlayListBanner = ({
         </div>
         {playlistOwner && (
           <div
-            onClick={() => onOpen()}
+            onClick={() => onOpen(playlistId)}
             className="invisible transition bg-zinc-800/80 h-full w-full group-hover:visible absolute top-0 left-0 cursor-pointer rounded-md"
           >
             <label
@@ -75,7 +73,7 @@ const PlayListBanner = ({
           <span>{user?.name}</span>
         </div>
       </div>
-      <UpdatePlaylist
+      {/* <UpdatePlaylist
         prevtitle={title}
         prevdesc={desc}
         previmage={coverImage}
@@ -83,7 +81,7 @@ const PlayListBanner = ({
         playlistId={playlistId}
         onClose={() => onClose()}
         isOpen={isOpen}
-      />
+      /> */}
     </div>
   );
 };

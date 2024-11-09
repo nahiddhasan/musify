@@ -18,7 +18,7 @@ const PlaylistPlayPause = ({ playlist }) => {
     }
   };
 
-  const isPl = playlist.id === pl.id;
+  const isPl = playlist?.id === pl?.id;
 
   return (
     <div
