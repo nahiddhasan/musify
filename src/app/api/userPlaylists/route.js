@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 
 export const GET = async(req)=>{
     const {searchParams} = new URL(req.url)
-    const skip = searchParams.get("skip" || "0");
-    const take = searchParams.get("take" || "10");
+    const skip = searchParams.get("skip");
+    const take = searchParams.get("take");
     
     try {
         const playlists = await prisma.playlist.findMany({

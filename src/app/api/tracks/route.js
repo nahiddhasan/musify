@@ -30,31 +30,37 @@ export const POST =async(req)=>{
 }
 
 //get all songs
-export const GET =async(req)=>{
-    const {searchParams} = new URL(req.url)
-    const search = searchParams.get("search")
-    const skip = searchParams.get("skip")
+
+export const GET = async (req) => {
+    const { searchParams } = new URL(req.url);
+    const search = searchParams.get("search");
+    const skip = searchParams.get("skip");
     const take = searchParams.get("take");
 
     try {
         const songs = await prisma.Song.findMany({
-            where:{
-                ...(search && { title: {contains: search,mode:"insensitive"} }),
+            where: {
+                ...(search && { title: { contains: search, mode: "insensitive" } }),
             },
-            orderBy:{
-                createdAt:"desc"
+            orderBy: {
+                createdAt: "desc",
             },
-            skip:parseInt(skip),
-            take:parseInt(take),
-            include:{
-                artist:true,
+            skip: parseInt(skip),
+            take: parseInt(take),
+            include: {
+                artist: true,
             }
-        })
-        const totalSongs = await prisma.song.count();
+        });
         
-        return new NextResponse(JSON.stringify({songs,totalSongs},{status:200}))
+        const totalSongs = await prisma.Song.count({
+            where: {
+                ...(search && { title: { contains: search, mode: "insensitive" } }),
+            }
+        });
+
+        return NextResponse.json({ songs, totalSongs }, { status: 200 });
     } catch (error) {
-        console.log(error)
-        return new NextResponse(JSON.stringify({messege:"something went wrong"},{staus:500}))  
+        console.error(error);
+        return NextResponse.json({ message: "Something went wrong" }, { status: 500 });
     }
-}
+};

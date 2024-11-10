@@ -1,6 +1,7 @@
 import AllTracks from "@/components/AllTracks";
 import { getSongs } from "@/utils/data";
 const TRACKS_PER_PAGE = 10;
+
 const AllTracksPage = async () => {
   const { songs, totalSongs } = await getSongs(0, TRACKS_PER_PAGE);
 

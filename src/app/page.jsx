@@ -1,7 +1,7 @@
 import Banner from "@/components/Banner";
+import MusicLoader from "@/components/loader/MusicLoader";
 import NewestSongs from "@/components/NewestSongs";
 import PlaylistContent from "@/components/PlaylistContent";
-import MusicLoader from "@/components/loader/MusicLoader";
 import { Suspense } from "react";
 
 const Home = () => {
